@@ -2,7 +2,11 @@
 
 
 
-
+ini_set('session.name','sesionEloy');
+ini_set('session.cookie_httponly',1);
+ini_set('session.cookie_secure',1);
+ini_set('session.cache_expire', 5);
+session_start();
 
 // Si se recibe la variable basket por get y su valor es delete se debe borrar todo el carrito
 if (isset($_GET['basket']) && $_GET['basket']==='delete') {
@@ -21,10 +25,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
 try {
 	if ($connection = getDBConnection(DB_NAME, DB_USERNAME, DB_PASSWORD)) {
-		foreach(/* Recorrer el carrito (en la sesión) */) {
+		foreach($_SESSION as $key =>$quantity) {
 			// Con cada producto de la sesión se obtiene su información de la BBDD
 			$product = $connection->query('SELECT name, price FROM products WHERE id='. $productId .';', PDO::FETCH_OBJ);
-			$products[] = ['info' => $product->fetch(), 'quantity' => /* Cantidad del producto en el carrito */];
+			$products[] = ['info' => $product->fetch(), 'quantity' => $quantity];
 		}
 
 	} else {

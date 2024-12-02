@@ -4,7 +4,19 @@
 ini_set('session.name','sesionEloy');
 ini_set('session.cookie_httponly',1);
 ini_set('session.cookie_secure',1);
+ini_set('session.cache_expire', 5);
 session_start();
+
+if($_SESSION($_GET('add'))){
+	if($_SESSION['basket'][$_GET('add')]){
+
+	}
+}elseif($_SESSION($_GET('delete'))){
+	
+}
+elseif($_SESSION($_GET('remove'))){
+	
+}
 
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
@@ -68,7 +80,9 @@ try {
 
 <!-- Si el usuario está logueado (existe su variable de sesión): -->
 		<div id="carrito">
-			X
+			<?php
+			$_SESSION['basket'];
+			?>
 			productos en el carrito.
 			<a href="/basket" class="boton">Ver carrito</a>
 		</div>
