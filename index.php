@@ -1,46 +1,35 @@
 <?php
 
-
 ini_set('session.name','sesionEloy');
 ini_set('session.cookie_httponly',1);
-ini_set('session.cookie_secure',1);
 ini_set('session.cache_expire', 5);
 session_start();
 
-if (!isset($_SESSION['basket'])) {
-    $_SESSION['basket'] = [];
-}
-
 if (isset($_GET['add'])) {
-    $productId = $_GET['add'];
-
  
-    if (isset($_SESSION['basket'][$productId])) {
-        $_SESSION['basket'][$productId]['cantidad']++;
+    if (!empty($_SESSION['basket'][$_GET['add']])) {
+        $_SESSION['basket'][$_GET['add']]+=1;
     } else {
         
-        $_SESSION['basket'][$productId] = ['cantidad' => 1];
+        $_SESSION['basket'][$_GET['add']] =  1;
     }
 } elseif (isset($_GET['subtract'])) {
-    $productId = $_GET['subtract'];
-
     
-    if (isset($_SESSION['basket'][$productId]['cantidad']) && $_SESSION['basket'][$productId]['cantidad'] > 0) {
-        $_SESSION['basket'][$productId]['cantidad']--;
+    if (isset($_SESSION['basket'][$_GET['subtract']]) && $_SESSION['basket'][$_GET['subtract']] > 0) {
+        $_SESSION['basket'][$_GET['subtract']]--;
     }
     
-    if (isset($_SESSION['basket'][$productId]['cantidad']) &&$_SESSION['basket'][$productId]['cantidad'] === 0) {
-        unset($_SESSION['basket'][$productId]);
+    if (isset($_SESSION['basket'][$_GET['subtract']]) &&$_SESSION['basket'][$_GET['subtract']] === 0) {
+        unset($_SESSION['basket'][$_GET['subtract']]);
     }
 } elseif (isset($_GET['remove'])) {
-    $productId = $_GET['remove'];
-
     
-    if (isset($_SESSION['basket'][$productId])) {
-        unset($_SESSION['basket'][$productId]);
+    if (isset($_SESSION['basket'][$_GET['remove']])) {
+        unset($_SESSION['basket'][$_GET['remove']]);
     }
 }
-var_dump($_SESSION['basket']);
+echo('<br>');
+var_dump($_SESSION);
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
@@ -104,13 +93,15 @@ try {
 <!-- Si el usuario está logueado (existe su variable de sesión): -->
 		<div id="carrito">
 			<?php
+			$cantCarr=0;
 			if(isset($_SESSION['basket'])){
-				echo count($_SESSION['basket']);
-			}else{
-				echo(0);
+				foreach($_SESSION['basket'] as $key => $value){
+					$cantCarr+=$value;
+					
+				}
 			}
-			?>
-			
+			echo($cantCarr);
+			?>			
 			productos en el carrito.
 			<a href="/basket" class="boton">Ver carrito</a>
 		</div>

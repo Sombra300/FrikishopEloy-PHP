@@ -1,10 +1,8 @@
 <?php
 
 
-
 ini_set('session.name','sesionEloy');
 ini_set('session.cookie_httponly',1);
-ini_set('session.cookie_secure',1);
 ini_set('session.cache_expire', 5);
 session_start();
 
