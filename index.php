@@ -7,17 +7,40 @@ ini_set('session.cookie_secure',1);
 ini_set('session.cache_expire', 5);
 session_start();
 
-if($_SESSION($_GET('add'))){
-	if($_SESSION['basket'][$_GET('add')]){
-
-	}
-}elseif($_SESSION($_GET('delete'))){
-	
-}
-elseif($_SESSION($_GET('remove'))){
-	
+if (!isset($_SESSION['basket'])) {
+    $_SESSION['basket'] = [];
 }
 
+if (isset($_GET['add'])) {
+    $productId = $_GET['add'];
+
+ 
+    if (isset($_SESSION['basket'][$productId])) {
+        $_SESSION['basket'][$productId]['cantidad']++;
+    } else {
+        
+        $_SESSION['basket'][$productId] = ['cantidad' => 1];
+    }
+} elseif (isset($_GET['subtract'])) {
+    $productId = $_GET['subtract'];
+
+    
+    if (isset($_SESSION['basket'][$productId]['cantidad']) && $_SESSION['basket'][$productId]['cantidad'] > 0) {
+        $_SESSION['basket'][$productId]['cantidad']--;
+    }
+    
+    if (isset($_SESSION['basket'][$productId]['cantidad']) &&$_SESSION['basket'][$productId]['cantidad'] === 0) {
+        unset($_SESSION['basket'][$productId]);
+    }
+} elseif (isset($_GET['remove'])) {
+    $productId = $_GET['remove'];
+
+    
+    if (isset($_SESSION['basket'][$productId])) {
+        unset($_SESSION['basket'][$productId]);
+    }
+}
+var_dump($_SESSION['basket']);
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
@@ -81,8 +104,13 @@ try {
 <!-- Si el usuario está logueado (existe su variable de sesión): -->
 		<div id="carrito">
 			<?php
-			$_SESSION['basket'];
+			if(isset($_SESSION['basket'])){
+				echo count($_SESSION['basket']);
+			}else{
+				echo(0);
+			}
 			?>
+			
 			productos en el carrito.
 			<a href="/basket" class="boton">Ver carrito</a>
 		</div>
@@ -98,9 +126,9 @@ try {
 					echo '<span>'. $product->price .' €</span><br>';
 					if ($product->stock>0) {
 						echo '<span class="botonesCarrito">';
-							echo '<a href="" class="productos"><img src="/img/mas.png" alt="añadir 1"></a>';
-							echo '<a href="" class="productos"><img src="/img/menos.png" alt="quitar 1"></a>';
-							echo '<a href="" class="productos"><img src="/img/papelera.png" alt="quitar todos"></a>';
+							echo '<a href="/add/'.$product->id.'" class="productos"><img src="/img/mas.png" alt="añadir 1"></a>';
+							echo '<a href="/subtract/'.$product->id.'" class="productos"><img src="/img/menos.png" alt="quitar 1"></a>';
+							echo '<a href="/remove/'.$product->id.'" class="productos"><img src="/img/papelera.png" alt="quitar todos"></a>';
 						echo '</span>';
 						echo '<span>Stock: '. $product->stock .'</span>';
 					} else {
