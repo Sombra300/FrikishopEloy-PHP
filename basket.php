@@ -8,7 +8,7 @@ session_start();
 
 // Si se recibe la variable basket por get y su valor es delete se debe borrar todo el carrito
 if (isset($_GET['basket']) && $_GET['basket']==='delete') {
-	
+	unset($_SESSION['basket']);
 	// Tras borrar el carrito se redirige al propio script para no mostrar la URL: basket/delete
 	header('location: /basket');
 	exit;
@@ -22,15 +22,17 @@ if (isset($_GET['basket']) && $_GET['basket']==='delete') {
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
 try {
-	if ($connection = getDBConnection(DB_NAME, DB_USERNAME, DB_PASSWORD)) {
-		foreach($_SESSION as $key =>$quantity) {
-			// Con cada producto de la sesión se obtiene su información de la BBDD
-			$product = $connection->query('SELECT name, price FROM products WHERE id='. $productId .';', PDO::FETCH_OBJ);
-			$products[] = ['info' => $product->fetch(), 'quantity' => $quantity];
-		}
+	if(isset($_SESSION['basket'])){
+		if ($connection = getDBConnection(DB_NAME, DB_USERNAME, DB_PASSWORD)) {
+			foreach($_SESSION['basket'] as $productId=>$quantity) {
+				// Con cada producto de la sesión se obtiene su información de la BBDD
+				$product = $connection->query('SELECT name, price FROM products WHERE id='. $productId .';', PDO::FETCH_OBJ);
+				$products[] = ['info' => $product->fetch(), 'quantity' => $quantity];
+			}
 
-	} else {
-		throw new Exception('Error en la conexión a la BBDD');
+		} else {
+			throw new Exception('Error en la conexión a la BBDD');
+		}
 	}
 } catch (Exception $exception) {	
 	$dbError = true;
@@ -59,25 +61,32 @@ unset($connection);
 		<br>
 		<section>
 			<!-- Si el carrito está vacío: -->
-				<div>El carrito está vacío.</div>'
-			
-			<!-- Si el carrito tiene productos: -->
-			<?php
-			$basketTotal = 0;
+			 <?php
+				if(empty($_SESSION['basket'])){
+					?>
+			 
+			 
+			 <div>El carrito está vacío.</div>
+			 
+			 <!-- Si el carrito tiene productos: -->
+			 <?php
+			}else{
+				$basketTotal = 0;
 
-			echo '<table>';
-			echo '<tr><td>Producto</td><td>Unidades</td><td>Precio</td><td>Subtotal</td></tr>';
-			foreach($products as $product) {
-				echo '<tr>';
-					echo '<td>'. $product['info']->name .'</td>';
-					echo '<td>'. $product['quantity'] .'</td>';
-					echo '<td>'. $product['info']->price .' €/unidad</td>';
-					echo '<td>'. $product['quantity']*$product['info']->price .' €</td>';
-					$basketTotal += $product['quantity']*$product['info']->price;
-				echo '</tr>';
-			}		
-			echo '<tr><td></td><td></td><td>Total</td><td>'. $basketTotal .' €</td></tr>';
-			echo '</table>';
+				echo '<table>';
+				echo '<tr><td>Producto</td><td>Unidades</td><td>Precio</td><td>Subtotal</td></tr>';
+				foreach($products as $product) {
+					echo '<tr>';
+						echo '<td>'. $product['info']->name .'</td>';
+						echo '<td>'. $product['quantity'] .'</td>';
+						echo '<td>'. $product['info']->price .' €/unidad</td>';
+						echo '<td>'. $product['quantity']*$product['info']->price .' €</td>';
+						$basketTotal += $product['quantity']*$product['info']->price;
+					echo '</tr>';
+				}		
+				echo '<tr><td></td><td></td><td>Total</td><td>'. $basketTotal .' €</td></tr>';
+				echo '</table>';
+			}
 			?>
 			<br><br>
 			<a href="/" class="boton">Volver</a>				

@@ -28,8 +28,6 @@ if (isset($_GET['add'])) {
         unset($_SESSION['basket'][$_GET['remove']]);
     }
 }
-echo('<br>');
-var_dump($_SESSION);
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
