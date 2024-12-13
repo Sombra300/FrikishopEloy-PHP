@@ -33,16 +33,18 @@ if(!empty($_POST)) {
                 // Se comprueba que no exista ya en la BBDD un usuario con el username o el mail recibido
                 $query = $connection->prepare('SELECT COUNT(*) AS Quantity FROM users WHERE (user=:user OR email=:mail);');
                     $query->bindParam(':user', $_POST['user']);
-                    $query->bindParam(':mail', $_POST['user']);
+                    $query->bindParam(':mail', $_POST['mail']);
                     $query->execute();
-                $count=$query->fetchObject();
+                $count=$query->fetch();
+
                 if($count['Quantity']==0){
+                    $encripPass=password_hash($_POST['password'],PASSWORD_DEFAULT);
                     unset($query);
-                    $query = $connection->prepare('INSERT user, rol, password FROM users;');
+                    $query = $connection->prepare('INSERT INTO users (user, email, password, rol) VALUES (:user, :mail, :password);');
                     $query->bindParam(':user', $_POST['user']);
-                    $query->bindParam(':mail', $_POST['user']);
+                    $query->bindParam(':mail', $_POST['mail']);
+                    $query->bindParam(':password', $encripPass);
                     // Si no existen hay que guardar los datos del nuevo usuario encriptando la contraseña
-                    $query->bindParam(':password', password_hash($_POST['password'],PASSWORD_DEFAULT));
                     $query->execute();
                     unset($query);
                     unset($connection);
@@ -80,10 +82,12 @@ if(!empty($_POST)) {
     ?>
     <div>
         <h2>Existen errores en el formulario:</h2>
-        <?php            
+        <?php
+        if(isset($errors)){            
             foreach ($errors as $value) {
                 echo $value .'<br>';
             }
+        }
         ?>
     </div>
 <br>
