@@ -36,11 +36,11 @@ if(!empty($_POST)) {
                     $query->bindParam(':mail', $_POST['mail']);
                     $query->execute();
                 $count=$query->fetch();
-
+                echo 'hasta el fech <br>';
                 if($count['Quantity']==0){
+                    echo 'entra en el if';
                     $encripPass=password_hash($_POST['password'],PASSWORD_DEFAULT);
-                    unset($query);
-                    $query = $connection->prepare('INSERT INTO users (user, email, password, rol) VALUES (:user, :mail, :password);');
+                    $query = $connection->prepare('INSERT INTO users (user, email, password, rol) VALUES (:user, :mail, :password, customer);');
                     $query->bindParam(':user', $_POST['user']);
                     $query->bindParam(':mail', $_POST['mail']);
                     $query->bindParam(':password', $encripPass);
@@ -49,7 +49,7 @@ if(!empty($_POST)) {
                     unset($query);
                     unset($connection);
                     //  y posteriormente se redirige a la página para que el usuario haga login
-                    header ('location: /login/signup/1');
+                    header ('location: /login/singup/1');
                     exit;
                 }else{
                     // Si sí que existen se guarda un error para luego mostrarlo en el body
@@ -81,7 +81,7 @@ if(!empty($_POST)) {
         require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
     ?>
     <div>
-        <h2>Existen errores en el formulario:</h2>
+        <!-- <h2>Existen errores en el formulario:</h2> -->
         <?php
         if(isset($errors)){            
             foreach ($errors as $value) {
