@@ -1,16 +1,21 @@
 <?php
-    
+/**
+ * header de las paginas
+ *
+ * @author Eloy
+ *
+ * @version 1.0
+ *
+ */  
 
     
 ?>
 <header>
-    <?php
-        if(empty($_SESSION['name'])){
-    ?>
-    
     <h1><a href="/">MerchaShop</a></h1>
-
     <a href="/">Principal</a>
+    <?php
+        if(empty($_SESSION['userName'])){
+    ?>
 
     <div id="zonausuario">
     <!-- Si el usuario no está logueado (no existe su variable de sesión): -->
@@ -19,11 +24,9 @@
 
     <?php
         }else{
-    ?>
-    <!-- Si el usuario está logueado (existe su variable de sesión): -->
-        <span id="usuario"><?$_SESSION['name']?></span>
-        <?php
-            if($_SESSION['name']['role']=='admin'){
+    //<!-- Si el usuario está logueado (existe su variable de sesión): -->
+        echo '<span id="usuario">'.$_SESSION['userName'].'</span>';
+            if($_SESSION['rol']=='admin'){
         ?>   
                 <!-- Solo si el usuario es administrador -->
                 <a href="/users">Ver usuarios</a>

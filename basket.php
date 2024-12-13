@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * Pagina para ver el carrito de la compra
  *
  * @author Eloy
  *

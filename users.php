@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * pagina para ver los usuarios
  *
  * @author Eloy
  *

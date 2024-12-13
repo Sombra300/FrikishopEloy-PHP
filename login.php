@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * Pagina para iniciar sesion
  *
  * @author Eloy
  *
@@ -15,7 +15,10 @@ session_start();
 
 
 // Si el usuario ya está logueado se le redirigirá a index
-if(empty($_SESSION['name'])){
+if(isset($_SESSION['userName'])){
+    header('location:/');
+    exit;
+}else{
 
     // Si llegan datos del formulario hay que intentar hacer el login
     if(!empty($_POST)) {
@@ -38,7 +41,7 @@ if(empty($_SESSION['name'])){
                     // Se accede obtienen los datos del usuario desde la base de datos
                     $query = $connection->prepare('SELECT user, rol, password FROM users WHERE (user=:user OR email=:mail);');
                     $query->bindParam(':user', $_POST['user']);
-                    $query->bindParam(':mail', $_POST['user']);
+                    $query->bindParam(':mail', $_POST['email']);
                     $query->execute();
 
                     // Comprobaciones para el login
@@ -46,11 +49,12 @@ if(empty($_SESSION['name'])){
                         $errors['login'] = 'Error en el acceso';
                     } else {
                         // Existe solo un usuario que coincide para realizar el login
-                        $passInDB=$query->fetchObject();
-                        if (password_verify($_POST['password'], $passInDB)){
+                        $dataInDB=$query->fetch();
+                        if (password_verify($_POST['password'], $dataInDB['password'])){
                             // Se comprueba si la contraseña es correcta
                             //  Si es correcta se almacenan los datos del usuario en la sesión y se redirige a index
-                            $_SESSION['name']=$_POST['name'];
+                            $_SESSION['userName']=$dataInDB['user'];
+                            $_SESSION['rol']=$dataInDB['rol'];
                             unset($passInDB);
                             unset($query);
                             unset($connection);
@@ -112,10 +116,8 @@ if(empty($_SESSION['name'])){
                 </form>
                 <?php
             }
-        ?>
-    </body>
-    </html>
-<?php
-}
-header('Location: /')
-?>
+        }
+    ?>
+</body>
+</html>
+

@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * Pagina para ver las ofertas
  *
  * @author Eloy
  *
@@ -43,7 +43,7 @@ unset($connection);
 			require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
 
 			// Si el usuario no está logueado (no existe su variable de sesión) se mostrará la siguiente línea
-			if(empty($_SESSION['name'])){
+			if(empty($_SESSION['userName'])){
 		?>
 			echo '<a href="/">Regístrate aquí</a>';
 		<?php	

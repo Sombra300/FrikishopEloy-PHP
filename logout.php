@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * Pagina para cerrar sesion
  *
  * @author Eloy
  *
@@ -15,7 +15,7 @@ session_start();
 
 
 // Se tiene que cerrar la sesión
-$_SESSION['name']='';
+session_destroy();
 
 
 // Una vez cerrada la sesión se redirige a index

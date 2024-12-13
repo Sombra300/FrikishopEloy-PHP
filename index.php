@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * pagina para ver la tienda
  *
  * @author Eloy
  *
@@ -66,7 +66,9 @@ try {
 	<body>
 		<?php
 			require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
-			if(empty($_SESSION['name'])){
+		
+			if(!isset($_SESSION['userName'])){
+				//Si no esta registrado mostrara el formulario para ello
 		?>
 
 <!-- Si el usuario no está logueado (no existe su variable de sesión): -->
@@ -85,15 +87,18 @@ try {
 			<label></label>
 			<input type="submit" value="Registrarse">
 		</form>
-
+		
 		<span>¿Ya tienes cuenta? <a href="/login">Loguéate aquí</a>.</span>
+		<?php
+			}
+		?>
 
 		<div id="ofertas">
 			<a href="/sales"><img src="/img/ofertas.png" alt="Imagen acceso ofertas"></a>
 		</div>
-<?php
-			}else{
-				?>
+		<?php
+			if(isset($_SESSION['userName'])){
+		?>
 
 <!-- Si el usuario está logueado (existe su variable de sesión): -->
 		<div id="carrito">
