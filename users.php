@@ -1,7 +1,17 @@
 <?php
+/**
+ * 
+ *
+ * @author Eloy
+ *
+ * @version 1.0
+ *
+ */
 
-
-
+ ini_set('session.name','sesionEloy');
+ ini_set('session.cookie_httponly',1);
+ ini_set('session.cache_expire', 5);
+ session_start();
 
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');

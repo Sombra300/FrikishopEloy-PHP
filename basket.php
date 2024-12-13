@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * 
+ *
+ * @author Eloy
+ *
+ * @version 1.0
+ *
+ */
 
 ini_set('session.name','sesionEloy');
 ini_set('session.cookie_httponly',1);

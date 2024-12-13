@@ -1,4 +1,16 @@
 <?php
+/**
+ * 
+ *
+ * @author Eloy
+ *
+ * @version 1.0
+ *
+ */
+ini_set('session.name','sesionEloy');
+ini_set('session.cookie_httponly',1);
+ini_set('session.cache_expire', 5);
+session_start();
 if(!empty($_POST)) {
     // Se eliminan los espacios delante y detrás de los campos recibidos
     foreach($_POST as $key => $value)
@@ -19,12 +31,29 @@ if(!empty($_POST)) {
         try {
             if ($connection = getDBConnection(DB_NAME, DB_USERNAME, DB_PASSWORD)) {
                 // Se comprueba que no exista ya en la BBDD un usuario con el username o el mail recibido
-                // Si no existen hay que guardar los datos del nuevo usuario encriptando la contraseña
-                //  y posteriormente se redirige a la página para que el usuario haga login
-                    // header ('location: /login/signup/1');
-                    // exit;
+                $query = $connection->prepare('SELECT COUNT(*) AS Quantity FROM users WHERE (user=:user OR email=:mail);');
+                    $query->bindParam(':user', $_POST['user']);
+                    $query->bindParam(':mail', $_POST['user']);
+                    $query->execute();
+                $count=$query->fetchObject();
+                if($count['Quantity']==0){
+                    unset($query);
+                    $query = $connection->prepare('INSERT user, rol, password FROM users;');
+                    $query->bindParam(':user', $_POST['user']);
+                    $query->bindParam(':mail', $_POST['user']);
+                    // Si no existen hay que guardar los datos del nuevo usuario encriptando la contraseña
+                    $query->bindParam(':password', password_hash($_POST['password'],PASSWORD_DEFAULT));
+                    $query->execute();
+                    unset($query);
+                    unset($connection);
+                    //  y posteriormente se redirige a la página para que el usuario haga login
+                    header ('location: /login/signup/1');
+                    exit;
+                }else{
+                    // Si sí que existen se guarda un error para luego mostrarlo en el body
+                    $errors['create']='El usuario o el correo ya estan en uso';
+                }
 
-                // Si sí que existen se guarda un error para luego mostrarlo en el body
 
             } else {
                 throw new Exception('Error en la conexión a la BBDD');

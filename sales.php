@@ -1,8 +1,18 @@
 <?php
+/**
+ * 
+ *
+ * @author Eloy
+ *
+ * @version 1.0
+ *
+ */
 
 
-
-
+ ini_set('session.name','sesionEloy');
+ ini_set('session.cookie_httponly',1);
+ ini_set('session.cache_expire', 5);
+ session_start();
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
@@ -33,9 +43,11 @@ unset($connection);
 			require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
 
 			// Si el usuario no está logueado (no existe su variable de sesión) se mostrará la siguiente línea
+			if(empty($_SESSION['name'])){
+		?>
 			echo '<a href="/">Regístrate aquí</a>';
-			
-		
+		<?php	
+			}	
 			echo '<h1>Artículos en oferta</h1>';
 			
 			echo '<section class="productos">';

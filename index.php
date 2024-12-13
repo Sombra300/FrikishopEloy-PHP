@@ -1,4 +1,12 @@
 <?php
+/**
+ * 
+ *
+ * @author Eloy
+ *
+ * @version 2.0
+ *
+ */
 
 ini_set('session.name','sesionEloy');
 ini_set('session.cookie_httponly',1);
@@ -58,6 +66,7 @@ try {
 	<body>
 		<?php
 			require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
+			if(empty($_SESSION['name'])){
 		?>
 
 <!-- Si el usuario no está logueado (no existe su variable de sesión): -->
@@ -82,11 +91,9 @@ try {
 		<div id="ofertas">
 			<a href="/sales"><img src="/img/ofertas.png" alt="Imagen acceso ofertas"></a>
 		</div>
-<!-- Fin usuario no logueado -->
-
-
-		<!-- Eliminar estos br en su momento--><br><br>
-
+<?php
+			}else{
+				?>
 
 <!-- Si el usuario está logueado (existe su variable de sesión): -->
 		<div id="carrito">
@@ -130,7 +137,10 @@ try {
 			}
 			?>
 		</section>
-<!-- Fin usuario logueado -->
+<?php
+			}
+?>
+
 
 	</body>
 </html>
